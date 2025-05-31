@@ -1,0 +1,20 @@
+# environment.yml
+name: phone_price_env
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.9 # Hoặc phiên bản Python bạn đang dùng (ví dụ: 3.10, 3.11)
+  - fastapi>=0.100.0 # Đảm bảo FastAPI hỗ trợ Pydantic v2
+  - uvicorn
+  - pandas
+  - numpy
+  - scikit-learn
+  - lightgbm
+  - joblib
+  - pip
+  - pip:
+      - "pydantic>=2.0" # Cài đặt Pydantic v2 trở lên
+      - "pydantic-settings>=2.0" # Thường đi kèm với Pydantic v2 nếu bạn dùng BaseSettings
+      - "pytest" # Thêm pytest để chạy unit test
+      - "httpx" # FastAPI dùng httpx làm TestClient

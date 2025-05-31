@@ -1,0 +1,122 @@
+## MLOps Project Pipeline - Tổng Quan
+
+### ✅ Mục tiêu:
+
+Triển khai một dự án Machine Learning theo hướng MLOps để apply vào vị trí MLOps Engineer, sử dụng các công cụ hiện đại như Docker, Terraform, Ansible, Jenkins, Helm, GCP và có khả năng tự động hóa CI/CD, logging, monitoring.
+
+---
+
+### 🧱 1. Local Development
+
+* [x] Viết FastAPI model (app/main.py)
+* [x] Test thành công trên localhost
+* [x] Viết Dockerfile chuẩn để container hóa ứng dụng
+
+---
+
+### 🐳 2. Docker
+
+* [x] Dockerize ứng dụng FastAPI
+* [x] Test image bằng `docker build` và `docker run`
+
+---
+
+### ☁️ 3. Infrastructure - Terraform
+
+* [ ] Dựng hạ tầng GCP bằng Terraform:
+
+  * [ ] Tạo GKE Cluster
+  * [ ] Tạo VM instance
+  * [ ] Tạo bucket (lưu model/log nếu cần)
+  * [ ] Thiết lập firewall, VPC network
+* [ ] Sử dụng `remote backend` (GCS bucket) để lưu trạng thái Terraform
+
+---
+
+### ⚙️ 4. Configuration - Ansible
+
+* [ ] Cài đặt phần mềm cần thiết lên VM:
+
+  * [ ] Docker
+  * [ ] Git
+  * [ ] Python, pip
+  * [ ] Nginx (nếu cần reverse proxy)
+* [ ] Cấu hình SSH, user, certs nếu cần
+
+---
+
+### 🧪 5. CI/CD - Jenkins
+
+* [ ] Cài đặt Jenkins (trên VM hoặc GKE)
+* [ ] Tạo Jenkinsfile:
+
+  * [ ] Build Docker image
+  * [ ] Push image lên Container Registry
+  * [ ] Deploy image lên:
+
+    * [ ] VM bằng Ansible
+    * [ ] GKE bằng Helm
+* [ ] Trigger build từ GitHub (webhook)
+
+---
+
+### 📦 6. Kubernetes Deployment - Helm
+
+* [ ] Tạo Helm chart cho ứng dụng FastAPI
+* [ ] Tích hợp Helm vào Jenkins pipeline để deploy lên GKE
+
+---
+
+### 📊 7. Logging & Tracing
+
+* [ ] Ghi log theo định dạng JSON trong FastAPI
+* [ ] Đẩy log từ container lên Google Cloud Logging
+* [ ] Tích hợp OpenTelemetry cho tracing
+* [ ] Gửi cảnh báo nếu log có lỗi nghiêm trọng
+
+---
+
+### 🤖 8. Tự động hóa quy trình - n8n
+
+* [ ] Triển khai n8n (Docker hoặc GKE)
+* [ ] Tạo workflow:
+
+  * [ ] Khi GitHub push → Trigger Jenkins
+  * [ ] Khi log lỗi → Gửi cảnh báo Telegram
+
+---
+
+### ✅ Kết quả mong muốn
+
+* Dự án MLOps chạy được trên GKE hoặc VM
+* Có CI/CD đầy đủ từ code đến deploy
+* Có logging, monitoring, alerting
+* Có thể trình bày, giải thích và minh họa rõ với nhà tuyển dụng
+
+---
+
+### 🗂 File cấu trúc (tham khảo)
+
+```
+project/
+├── app/
+│   └── main.py
+├── Dockerfile
+├── requirements.txt
+├── terraform/
+│   ├── main.tf
+│   ├── outputs.tf
+│   └── variables.tf
+├── ansible/
+│   └── playbook.yml
+├── helm/
+│   └── fastapi-chart/
+├── jenkins/
+│   └── Jenkinsfile
+└── pipeline.txt  ← (file này)
+```
+
+---
+
+> Nếu bạn cần tạo từng file (Jenkinsfile, Helm chart, Terraform...) mình có thể hỗ trợ viết mẫu đầy đủ theo pipeline này.
+
