@@ -1,122 +1,77 @@
-## MLOps Project Pipeline - Tổng Quan
-
-### ✅ Mục tiêu:
-
-Triển khai một dự án Machine Learning theo hướng MLOps để apply vào vị trí MLOps Engineer, sử dụng các công cụ hiện đại như Docker, Terraform, Ansible, Jenkins, Helm, GCP và có khả năng tự động hóa CI/CD, logging, monitoring.
+### ✅ MLOps Pipeline for Phone Price Prediction API
 
 ---
 
-### 🧱 1. Local Development
+### 1. Develop
 
-* [x] Viết FastAPI model (app/main.py)
-* [x] Test thành công trên localhost
-* [x] Viết Dockerfile chuẩn để container hóa ứng dụng
+- [x] Cleaned & preprocessed dataset
+- [x] Train model (LGBMRegressor) with log(price)
+- [x] Save model: 
+  - `best_lgbm_regressor.joblib`
+  - `scaler.joblib`
+  - `feature_columns.joblib`
+- [x] Build FastAPI app with:
+  - `/predict` endpoint
+  - Pydantic schema
+  - Input preprocessing
+
+🆕 MLflow:
+- [x] Log experiment details (params, metrics, model artifacts)
+- [x] Set up MLflow Tracking URI (localhost or remote)
+- [x] Set up experiment name: `PhonePrice-Inference`
 
 ---
 
 ### 🐳 2. Docker
 
-* [x] Dockerize ứng dụng FastAPI
-* [x] Test image bằng `docker build` và `docker run`
+- [x] Dockerize FastAPI app with production-ready Dockerfile
+- [x] Include model artifacts in Docker image
+- [x] Run container locally: `docker run -p 8000:8000 phone-price-api`
+- [x] Validate `/docs` and `/predict`
+
+🆕 MLflow:
+- [x] Ensure MLflow runs inside container (or connect to external MLflow Tracking Server)
 
 ---
 
-### ☁️ 3. Infrastructure - Terraform
+### ☁️ 3. Infrastructure (GCP + IaC)
 
-* [ ] Dựng hạ tầng GCP bằng Terraform:
-
-  * [ ] Tạo GKE Cluster
-  * [ ] Tạo VM instance
-  * [ ] Tạo bucket (lưu model/log nếu cần)
-  * [ ] Thiết lập firewall, VPC network
-* [ ] Sử dụng `remote backend` (GCS bucket) để lưu trạng thái Terraform
+- [ ] Use Terraform to provision:
+  - GCE Instance (or GKE Cluster)
+  - Cloud Storage (optional for storing artifacts)
+- [ ] Ansible to install Docker + dependencies
+- [ ] Set up Firewall rules (port 8000, 5000 for MLflow)
 
 ---
 
-### ⚙️ 4. Configuration - Ansible
+### 🔁 4. CI/CD
 
-* [ ] Cài đặt phần mềm cần thiết lên VM:
-
-  * [ ] Docker
-  * [ ] Git
-  * [ ] Python, pip
-  * [ ] Nginx (nếu cần reverse proxy)
-* [ ] Cấu hình SSH, user, certs nếu cần
+- [ ] GitHub Actions or Jenkins pipeline:
+  - Linting, Testing
+  - Docker build & push to GCR
+  - Deploy container to GCP
+- [ ] Helm chart (for GKE deployment)
 
 ---
 
-### 🧪 5. CI/CD - Jenkins
+### 📊 5. Monitoring & Logging
 
-* [ ] Cài đặt Jenkins (trên VM hoặc GKE)
-* [ ] Tạo Jenkinsfile:
-
-  * [ ] Build Docker image
-  * [ ] Push image lên Container Registry
-  * [ ] Deploy image lên:
-
-    * [ ] VM bằng Ansible
-    * [ ] GKE bằng Helm
-* [ ] Trigger build từ GitHub (webhook)
+- [ ] Prometheus + Grafana (basic request metrics)
+- [ ] Logging via GCP Logs or custom logging handler
 
 ---
 
-### 📦 6. Kubernetes Deployment - Helm
+### 🎯 6. MLflow Integration (Experiment Tracking)
 
-* [ ] Tạo Helm chart cho ứng dụng FastAPI
-* [ ] Tích hợp Helm vào Jenkins pipeline để deploy lên GKE
-
----
-
-### 📊 7. Logging & Tracing
-
-* [ ] Ghi log theo định dạng JSON trong FastAPI
-* [ ] Đẩy log từ container lên Google Cloud Logging
-* [ ] Tích hợp OpenTelemetry cho tracing
-* [ ] Gửi cảnh báo nếu log có lỗi nghiêm trọng
+- [x] Log model training parameters (learning_rate, n_estimators, etc.)
+- [x] Log metrics (MAE, RMSE)
+- [x] Log model artifacts (joblib files)
+- [x] Track inference events (request time, prediction result)
+- [ ] (Optional) Register model to MLflow Model Registry
+- [ ] (Optional) Serve model via `mlflow models serve`
 
 ---
 
-### 🤖 8. Tự động hóa quy trình - n8n
-
-* [ ] Triển khai n8n (Docker hoặc GKE)
-* [ ] Tạo workflow:
-
-  * [ ] Khi GitHub push → Trigger Jenkins
-  * [ ] Khi log lỗi → Gửi cảnh báo Telegram
-
----
-
-### ✅ Kết quả mong muốn
-
-* Dự án MLOps chạy được trên GKE hoặc VM
-* Có CI/CD đầy đủ từ code đến deploy
-* Có logging, monitoring, alerting
-* Có thể trình bày, giải thích và minh họa rõ với nhà tuyển dụng
-
----
-
-### 🗂 File cấu trúc (tham khảo)
-
-```
-project/
-├── app/
-│   └── main.py
-├── Dockerfile
-├── requirements.txt
-├── terraform/
-│   ├── main.tf
-│   ├── outputs.tf
-│   └── variables.tf
-├── ansible/
-│   └── playbook.yml
-├── helm/
-│   └── fastapi-chart/
-├── jenkins/
-│   └── Jenkinsfile
-└── pipeline.txt  ← (file này)
-```
-
----
-
-> Nếu bạn cần tạo từng file (Jenkinsfile, Helm chart, Terraform...) mình có thể hỗ trợ viết mẫu đầy đủ theo pipeline này.
+✅ Status: LOCAL TEST PASSED  
+🔜 Next: Deploy with Terraform & connect external MLflow server (or use GCP Bucket backend)
 

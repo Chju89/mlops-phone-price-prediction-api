@@ -1,0 +1,29 @@
+# Dockerfile.mlflow
+
+# 1. Chọn image PYthon base nhẹ
+FROM python:3.9-slim
+
+# 2. Set thư mục làm việc trong container
+WORKDIR /mlflow_app
+
+# 3. Cài curl
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# 4. Copy file requirements.txt vào contrainer
+COPY requirements/mlflow.txt requirements.txt
+
+# 5. Cài đặt các thư viện từ requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# 6. Copy toàn bộ mã nguồn dựa án vào container 
+COPY . .
+
+# 7. Mở cổng 5000 để MLflow có thể truy cập từ bên ngoài
+EXPOSE 5000
+
+# 8. Khởi động MLflow Tracking Server
+CMD ["mlflow", "server", \
+     "--backend-store-uri", "sqlite:///mlflow.db", \
+     "--default-artifact-root", "./mlruns", \
+     "--host", "0.0.0.0", "--port", "5000"]
+

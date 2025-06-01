@@ -18,3 +18,4 @@ dependencies:
       - "pydantic-settings>=2.0" # Thường đi kèm với Pydantic v2 nếu bạn dùng BaseSettings
       - "pytest" # Thêm pytest để chạy unit test
       - "httpx" # FastAPI dùng httpx làm TestClient
+      - "mlflow" 

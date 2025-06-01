@@ -7,6 +7,7 @@ lightgbm
 joblib
 pydantic>=2.0
 pydantic-settings>=2.0
-pytest
 httpx
-mlflow
+pytest
+mlflow  # vẫn nên giữ nếu app có log từ FastAPI
+
