@@ -52,14 +52,18 @@ conda activate phone_price_env
 
 Chạy API cục bộ
 # Đảm bảo bạn đang ở thư mục gốc của dự án
-# Chạy ứng dụng FastAPI với Uvicorn
-```shell
-PYTHONPATH=. uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+---
+
+## 🐳 Run with Docker Compose
+
+### 1. Build and start services
+```bash
+docker compose up --build
 ```
+### 2. Access the services 
+| Service   | URL                                            |
+| --------- | ---------------------------------------------- |
+| FastAPI   | [http://localhost:8000](http://localhost:8000) |
+| MLflow UI | [http://localhost:5000](http://localhost:5000) |
 
-Sau khi server khởi động, bạn có thể truy cập:
-
-    Swagger UI (tài liệu API tương tác): http://127.0.0.1:8000/docs
-    ReDoc (tài liệu API thay thế): http://127.0.0.1:8000/redoc
-
-Bạn có thể sử dụng Swagger UI để kiểm tra endpoint /predict bằng cách gửi yêu cầu POST với dữ liệu điện thoại mẫu

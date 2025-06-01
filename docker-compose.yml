@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/app/mlruns
+      - ./mlflow.db:/app/mlflow.db
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      mlflow:
+        condition: service_healthy
+
