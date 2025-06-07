@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mlflow.fullname" . }}
+  labels:
+    app: {{ include "mlflow.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "mlflow.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "mlflow.name" . }}
+    spec:
+      containers:
+        - name: mlflow
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 5000
+          command: ["mlflow"]
+          args:
+            [
+              "server",
+              "--host=0.0.0.0",
+              "--port=5000",
+              "--backend-store-uri=sqlite:///mlflow.db",
+              "--default-artifact-root=gs://mlflow-artifacts-mle-course"
+            ]
+          volumeMounts:
+            - name: mlflow-data
+              mountPath: /mlflow_app
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: mlflow-data
+          emptyDir: {}
+

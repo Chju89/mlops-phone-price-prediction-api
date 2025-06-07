@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fastapi.fullname" . }}
+  labels:
+    app: {{ include "fastapi.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "fastapi.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "fastapi.name" . }}
+    spec:
+      containers:
+        - name: {{ include "fastapi.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+

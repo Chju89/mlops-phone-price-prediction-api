@@ -67,7 +67,31 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
    http://<jenkins_vm_ip>:5000
 
 ### Next Steps
- - Push Docker images to Artifact Registry.
+## Push Docker images to Artifact Registry.
+1. Đăng nhập Google Artifact Registry và cấu hình Docker
+```
+gcloud auth login
+gcloud auth configure-docker us-central1-docker.pkg.dev
+```
+
+2. Build + Tag + Push Docker image FastAPI
+```bash
+docker build -t phone-price-api-fastapi:latest -f Dockerfile .
+docker tag phone-price-api-fastapi:latest us-central1-docker.pkg.dev/mle-course-454508/mlops-repo/phone-price-api-fastapi:latest
+docker push us-central1-docker.pkg.dev/mle-course-454508/mlops-repo/phone-price-api-fastapi:latest
+```
+
+3. Build + Tag + Push Docker image MLflow
+```bash
+docker build -t phone-price-api-mlflow:latest -f Dockerfile.mlflow .
+docker tag phone-price-api-mlflow:latest us-central1-docker.pkg.dev/mle-course-454508/mlops-repo/phone-price-api-mlflow:latest
+docker push us-central1-docker.pkg.dev/mle-course-454508/mlops-repo/phone-price-api-mlflow:latest
+```
+
+4. Kiểm tra 2 image đã có trong Artifact Registry
+```bash
+gcloud artifacts docker images list us-central1-docker.pkg.dev/mle-course-454508/mlops-repo
+```
  - Use Jenkins to trigger CI/CD:
     . Build & push Docker images
     . Deploy via Helm to GKE
@@ -80,4 +104,4 @@ artifact_registry_repo = "mlops-repo"
 bucket_name = "mle-course-454508-mlflow-bucket"
 gke_cluster_name = "mlops-cluster"
 jenkins_vm_ip = "34.30.166.93"
-
+bash
