@@ -2,8 +2,8 @@ replicaCount: 1
 
 image:
   repository: us-central1-docker.pkg.dev/mle-course-454508/mlops-repo/phone-price-api-fastapi
-  pullPolicy: IfNotPresent
-  tag: "latest"
+  pullPolicy: Always
+  tag: v4
 
 service:
   type: LoadBalancer
@@ -19,5 +19,7 @@ resources:
     memory: 256Mi
 env:
   - name: MLFLOW_TRACKING_URI
-    value: "http://mlflow-mlflow:5000"
+    value: http://mlflow-mlflow.default.svc.cluster.local:5000
+  - name: MLFLOW_ARTIFACT_URI
+    value: gs://mle-course-454508-mlflow-bucket/mlflow
 

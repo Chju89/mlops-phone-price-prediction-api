@@ -20,21 +20,29 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 5000
-          command: ["mlflow"]
+          command: ["mlflow", "server"]
           args:
-            [
-              "server",
-              "--host=0.0.0.0",
-              "--port=5000",
-              "--backend-store-uri=sqlite:///mlflow.db",
-              "--default-artifact-root=gs://mlflow-artifacts-mle-course"
-            ]
+            {{- range .Values.args }}
+            - "{{ . }}"
+            {{- end }}
           volumeMounts:
             - name: mlflow-data
               mountPath: /mlflow_app
+            {{- if .Values.extraVolumeMounts }}
+            {{- toYaml .Values.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+          env:
+            {{- if .Values.env }}
+            {{- toYaml .Values.env | nindent 12 }}
+            {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+
       volumes:
         - name: mlflow-data
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: mlflow-pvc
+        {{- if .Values.extraVolumes }}
+        {{- toYaml .Values.extraVolumes | nindent 8 }}
+        {{- end }}
 

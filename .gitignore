@@ -4,3 +4,9 @@
 *.iml
 mlflow.db
 mlruns/
+# Bỏ qua file JSON chứa GCP service account
+helm/mlflow/file/*.json
+
+# Bỏ qua secret.yaml nếu chứa thông tin nhạy cảm (hoặc ghi chú không push)
+helm/mlflow/templates/secret.yaml
+

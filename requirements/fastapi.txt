@@ -10,4 +10,5 @@ pydantic-settings>=2.0
 httpx
 pytest
 mlflow  # vẫn nên giữ nếu app có log từ FastAPI
+google-cloud-storage
 

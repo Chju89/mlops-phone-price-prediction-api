@@ -2,7 +2,15 @@
 resource "google_storage_bucket" "mlflow_bucket" {
   name     = "${var.project_id}-mlflow-bucket"
   location = var.region
+  force_destroy = true
+
+  versioning {
+    enabled = true
+  }
+
+  uniform_bucket_level_access = true
 }
+
 
 # Artifact Registry
 resource "google_artifact_registry_repository" "repo" {
@@ -17,6 +25,7 @@ resource "google_artifact_registry_repository" "repo" {
 resource "google_container_cluster" "mlops_cluster" {
   name     = "mlops-cluster"
   location = var.region
+  network = "default"
 
   remove_default_node_pool = true
   initial_node_count       = 1
@@ -47,7 +56,7 @@ resource "google_compute_instance" "jenkins" {
 
   boot_disk {
     initialize_params {
-      image  = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2004-lts"
+      image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2204-lts"
       size   = 20
     }
   }

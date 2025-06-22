@@ -3,10 +3,10 @@ replicaCount: 1
 image:
   repository: us-central1-docker.pkg.dev/mle-course-454508/mlops-repo/phone-price-api-mlflow
   pullPolicy: IfNotPresent
-  tag: latest
+  tag: v3
 
 service:
-  type: ClusterIP
+  type: LoadBalancer
   port: 5000
 
 resources:
@@ -15,5 +15,31 @@ resources:
     memory: 1Gi
   requests:
     cpu: 250m
-    memory: 512Mi
+    memory: 256Mi
+
+env:
+  - name: MLFLOW_S3_BUCKET
+    value: mle-course-454508-mlflow-bucket
+  - name: GOOGLE_APPLICATION_CREDENTIALS
+    value: /gcp/credentials.json
+
+extraVolumeMounts:
+  - name: gcp-sa-key
+    mountPath: /gcp
+    readOnly: true
+
+extraVolumes:
+  - name: gcp-sa-key
+    secret:
+      secretName: gcp-sa-key
+
+persistentVolume:
+  enabled: true
+  existingClaim: mlflow-pvc
+
+args:
+  - --backend-store-uri=sqlite:////mlflow_app/mlflow.db
+  - --default-artifact-root=gs://mle-course-454508-mlflow-bucket/mlflow
+  - --host=0.0.0.0
+  - --port=5000
 

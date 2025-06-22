@@ -11,6 +11,7 @@ import time
 mlflow_uri = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow:5000")
 mlflow.set_tracking_uri(mlflow_uri)
 mlflow.set_experiment("PhonePrice-Inference")
+
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 MODELS_DIR = os.path.join(BASE_DIR, "models")
 
@@ -183,6 +184,8 @@ class PredictionService:
             start_time = time.time() # Đo thời gian inference
 
 
+           # mlflow.set_experiment("PhonePrice-Inference")
+
             processed_data_df = self.preprocess_data(new_phone_data_raw)
 
             X_processed_array = processed_data_df[self.trained_feature_columns].values
@@ -195,7 +198,7 @@ class PredictionService:
 
 
             # MLflow logging
-            with mlflow.start_run(nested=True): #nested nếu dùng CI/CD hoặc nhiều tầng
+            with mlflow.start_run():
                 mlflow.log_param("model", "best_lgbm_regressor")
                 mlflow.log_metric("inference_time", time.time() - start_time)
                 mlflow.log_metric("predicted_price", predicted_price)
