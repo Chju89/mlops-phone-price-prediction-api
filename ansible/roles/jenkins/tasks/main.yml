@@ -1,0 +1,53 @@
+---
+- name: Install Java (Jenkins dependency)
+  apt:
+    name: openjdk-17-jdk
+    state: present
+    update_cache: yes
+
+- name: Ensure /etc/apt/keyrings directory exists
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+
+# Cleanup Jenkins config (phòng lỗi trùng repo/key)
+- name: Remove legacy Jenkins repo (if exists)
+  file:
+    path: /etc/apt/sources.list.d/jenkins.list
+    state: absent
+
+- name: Remove legacy Jenkins GPG key (if exists)
+  file:
+    path: /usr/share/keyrings/jenkins-keyring.asc
+    state: absent
+
+# Tải GPG key chính thức
+- name: Download Jenkins GPG key and convert to GPG format
+  shell: |
+    curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io.key | gpg --dearmor -o /etc/apt/keyrings/jenkins.gpg
+  args:
+    creates: /etc/apt/keyrings/jenkins.gpg
+
+# Thêm repo Jenkins dùng signed-by chuẩn
+- name: Add Jenkins APT repository
+  apt_repository:
+    repo: "deb [signed-by=/etc/apt/keyrings/jenkins.gpg] https://pkg.jenkins.io/debian-stable binary/"
+    filename: jenkins
+    state: present
+
+- name: Update APT cache
+  apt:
+    update_cache: yes
+
+- name: Install Jenkins
+  apt:
+    name: jenkins
+    state: latest
+
+- name: Enable and start Jenkins service
+  systemd:
+    name: jenkins
+    enabled: yes
+    state: started
+

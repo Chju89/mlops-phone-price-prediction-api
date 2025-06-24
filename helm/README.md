@@ -1,125 +1,84 @@
-
-# Phone Price Prediction API - Deployment on GKE
-
-This repository contains Helm charts to deploy the Phone Price Prediction API (FastAPI) and MLflow tracking server on Google Kubernetes Engine (GKE).
+### ✅ MLOps Pipeline for Phone Price Prediction API
 
 ---
 
-## Prerequisites
+### 1. Develop
 
-- Google Cloud project with billing enabled
-- GKE cluster created and `kubectl` configured to access it
-- Google Artifact Registry with Docker images pushed:
-  - `phone-price-api-fastapi`
-  - `phone-price-api-mlflow`
-- Helm installed locally ([Install Helm](https://helm.sh/docs/intro/install/))
+- [x] Cleaned & preprocessed dataset
+- [x] Train model (LGBMRegressor) with log(price)
+- [x] Save model: 
+  - `best_lgbm_regressor.joblib`
+  - `scaler.joblib`
+  - `feature_columns.joblib`
+- [x] Build FastAPI app with:
+  - `/predict` endpoint
+  - Pydantic schema
+  - Input preprocessing
 
----
-
-## Deployment Steps
-
-### 1. Connect to your GKE cluster
-
-```bash
-gcloud container clusters get-credentials <CLUSTER_NAME> --zone <ZONE> --project <PROJECT_ID>
-```
-
----
-
-### 2. Deploy MLflow tracking server
-
-MLflow is used to track model experiments and logs.
-
-```bash
-helm install mlflow ./helm/mlflow --namespace mlflow --create-namespace
-```
-
-Check pod status:
-
-```bash
-kubectl get pods -n mlflow
-```
+🆕 MLflow:
+- [x] Log experiment details (params, metrics, model artifacts)
+- [x] Set up MLflow Tracking URI (localhost or remote)
+- [x] Set up experiment name: `PhonePrice-Inference`
 
 ---
 
-### 3. Deploy FastAPI application
+### 🐳 2. Docker
 
-```bash
-helm install fastapi ./helm/fastapi --namespace fastapi --create-namespace
-```
+- [x] Dockerize FastAPI app with production-ready Dockerfile
+- [x] Include model artifacts in Docker image
+- [x] Run container locally: `docker run -p 8000:8000 phone-price-api`
+- [x] Validate `/docs` and `/predict`
 
-Check pod status:
-
-```bash
-kubectl get pods -n fastapi
-```
+🆕 MLflow:
+- [x] Ensure MLflow runs inside container (or connect to external MLflow Tracking Server)
 
 ---
 
-### 4. Access services
+### ☁️ 3. Infrastructure (GCP + IaC)
 
-If you don't have LoadBalancer or Ingress configured, you can use port-forwarding:
-
-- MLflow UI:
-
-```bash
-kubectl port-forward svc/mlflow 5000:5000 -n mlflow
-```
-
-Access MLflow at: [http://localhost:5000](http://localhost:5000)
-
-- FastAPI API:
-
-```bash
-kubectl port-forward svc/fastapi 8000:8000 -n fastapi
-```
-
-Access FastAPI docs at: [http://localhost:8000/docs](http://localhost:8000/docs)
+- [x] Use Terraform to provision:
+  - GKE Cluster
+  - Artifact Registry
+  - GCS Bucket (for MLflow artifacts)
+  - GCE VM (Jenkins host)
+  - Firewall rules (port 8000, 5000, etc.)
+- [x] Ansible to install Docker + dependencies (Jenkins VM)
+- [x] Deploy MLflow & FastAPI to GKE via Helm
 
 ---
 
-### 5. Test FastAPI predict endpoint
+### 🔁 4. CI/CD
 
-Use curl or Postman to test prediction API:
-
-```bash
-curl -X POST http://localhost:8000/predict \
--H "Content-Type: application/json" \
--d '{
-  "feature1": value1,
-  "feature2": value2,
-  ...
-}'
-```
-
-Replace the JSON body with your actual input features.
+- [ ] Jenkins Pipeline or GitHub Actions:
+  - [ ] Linting, Testing
+  - [ ] Docker build & push to Artifact Registry
+  - [ ] Helm deploy to GKE
+- [ ] Trigger on push to `main` or via release tags
 
 ---
 
-## Notes
+### 📊 5. Monitoring & Logging
 
-- This setup uses minimal resource configuration for free-tier GKE clusters.
-- For production, consider adding Persistent Volumes, LoadBalancer or Ingress, and securing services.
-- You can automate build and deployment with Jenkins or GitHub Actions.
-
----
-
-## Troubleshooting
-
-- Check pod logs:
-
-```bash
-kubectl logs -l app=mlflow -n mlflow
-kubectl logs -l app=fastapi -n fastapi
-```
-
-- Verify Helm releases:
-
-```bash
-helm list -n mlflow
-helm list -n fastapi
-```
+- [ ] Prometheus + Grafana (via Helm):
+  - [ ] Monitor FastAPI & MLflow pods
+  - [ ] Basic request metrics, latency, error rate
+- [ ] Logging:
+  - [ ] GCP Logging (Cloud Logging)
+  - [ ] Custom logging format (optional)
 
 ---
 
-Feel free to open issues or contribute!
+### 🎯 6. MLflow Integration (Experiment Tracking)
+
+- [x] Log model training parameters (learning_rate, n_estimators, etc.)
+- [x] Log metrics (MAE, RMSE)
+- [x] Log model artifacts (joblib files)
+- [x] Track inference events (request time, prediction result)
+- [ ] (Optional) Register model to MLflow Model Registry
+- [ ] (Optional) Serve model via `mlflow models serve`
+
+---
+
+✅ **Status**: Deployed FastAPI + MLflow on GCP with Terraform & Helm  
+🔜 **Next**: Set up CI/CD (Jenkins or GitHub Actions), Monitoring & Logging
+

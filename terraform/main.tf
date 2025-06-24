@@ -53,6 +53,7 @@ resource "google_compute_instance" "jenkins" {
   name         = "jenkins-vm"
   machine_type = "e2-micro"
   zone         = var.zone
+  tags         = ["jenkins"]
 
   boot_disk {
     initialize_params {

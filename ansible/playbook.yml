@@ -1,0 +1,7 @@
+- name: Setup Jenkins VM
+  hosts: jenkins
+  become: yes
+  roles:
+    - docker
+    - jenkins
+
