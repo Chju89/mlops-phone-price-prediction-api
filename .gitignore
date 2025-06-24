@@ -10,3 +10,6 @@ helm/mlflow/file/*.json
 # Bỏ qua secret.yaml nếu chứa thông tin nhạy cảm (hoặc ghi chú không push)
 helm/mlflow/templates/secret.yaml
 
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/terraform.tfvars
