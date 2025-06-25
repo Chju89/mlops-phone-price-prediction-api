@@ -9,17 +9,14 @@ pipeline {
         REPO = 'mlops-repo'
         GKE_CLUSTER = 'mlops-cluster'
         GKE_ZONE = 'us-central1-a'
-        GOOGLE_APPLICATION_CREDENTIALS = "${WORKSPACE}/gcp-sa-key.json"
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // Clone repo bằng SSH (đảm bảo đã tạo credential trong Jenkins)
-                git url: 'git@github.com:Chju89/mlops-phone-price-prediction-api.git', credentialsId: 'github-ssh-key', branch: 'main'
-
-                // Copy file .json vào workspace
-                sh 'cp ~/gcp-sa-key.json $GOOGLE_APPLICATION_CREDENTIALS'
+                git url: 'git@github.com:Chju89/mlops-phone-price-prediction-api.git', 
+                    credentialsId: 'github-ssh-key', 
+                    branch: 'main'
             }
         }
 
@@ -49,26 +46,30 @@ pipeline {
 
         stage('Docker Build & Push') {
             steps {
-                sh '''
-                gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                gcloud auth configure-docker $REGION-docker.pkg.dev
+                withCredentials([file(credentialsId: 'gcp-sa-key', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                    sh '''
+                    gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                    gcloud auth configure-docker $REGION-docker.pkg.dev
 
-                docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE_NAME:$IMAGE_TAG -f Dockerfile .
-                docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE_NAME:$IMAGE_TAG
-                '''
+                    docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE_NAME:$IMAGE_TAG -f Dockerfile .
+                    docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE_NAME:$IMAGE_TAG
+                    '''
+                }
             }
         }
 
         stage('Deploy to GKE') {
             steps {
-                sh '''
-                gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $PROJECT_ID
+                withCredentials([file(credentialsId: 'gcp-sa-key', variable: 'GOOGLE_APPLICATION_CREDENTIALS')]) {
+                    sh '''
+                    gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
+                    gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $PROJECT_ID
 
-                helm upgrade --install fastapi ./helm/fastapi \
-                  --set image.repository=$REGION-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE_NAME \
-                  --set image.tag=$IMAGE_TAG
-                '''
+                    helm upgrade --install fastapi ./helm/fastapi \
+                      --set image.repository=$REGION-docker.pkg.dev/$PROJECT_ID/$REPO/$IMAGE_NAME \
+                      --set image.tag=$IMAGE_TAG
+                    '''
+                }
             }
         }
 
