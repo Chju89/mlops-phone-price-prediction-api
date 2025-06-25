@@ -5,6 +5,7 @@ from app.app import app
 
 client = TestClient(app)
 
+
 def test_predict_endpoint_success():
     sample_input = {
         "Model Name": "iPhone 14 Pro 256GB",
@@ -17,7 +18,7 @@ def test_predict_endpoint_success():
         "Battery Capacity": "3200mAh",
         "Screen Size": "6.1inches",
         "Processor": "A16 Bionic",
-        "Country": "USA"
+        "Country": "USA",
     }
 
     response = client.post("/predict", json=sample_input)
@@ -31,10 +32,9 @@ def test_predict_endpoint_success():
 def test_predict_endpoint_invalid_input():
     bad_input = {
         "Model Name": "Some Phone",
-        "Company Name": "BrandX"
+        "Company Name": "BrandX",
         # thiếu các trường bắt buộc khác
     }
 
     response = client.post("/predict", json=bad_input)
     assert response.status_code == 422  # Lỗi do thiếu field
-

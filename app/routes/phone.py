@@ -6,6 +6,7 @@ router = APIRouter()
 
 prediction_service = PredictionService()
 
+
 @router.post("/predict")
 async def predict_phone_price(
     phone_data: PhoneData = Body(
@@ -24,19 +25,23 @@ async def predict_phone_price(
                     "Back Camera": "12MP+64MP+12MP",
                     "Battery Capacity": "4000mAh",
                     "Screen Size": "6.2inches",
-                    "Country": "USA"
-                }
+                    "Country": "USA",
+                },
             }
-        }
+        },
     )
 ):
     if prediction_service.best_lgbm_model is None:
-        raise HTTPException(status_code=500, detail="Mô hình dự đoán chưa sẵn sàng. Vui lòng kiểm tra log server.")
+        raise HTTPException(
+            status_code=500,
+            detail="Mô hình dự đoán chưa sẵn sàng. Vui lòng kiểm tra log server.",
+        )
 
     try:
         raw_input_data = phone_data.model_dump(by_alias=True)
         predicted_price = prediction_service.predict_new_phone_price(raw_input_data)
         return {"predicted_price_USD": round(predicted_price, 2)}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Đã xảy ra lỗi trong quá trình dự đoán: {e}")
-
+        raise HTTPException(
+            status_code=500, detail=f"Đã xảy ra lỗi trong quá trình dự đoán: {e}"
+        )

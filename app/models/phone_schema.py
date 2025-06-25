@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field
 
+
 class PhoneData(BaseModel):
     Company_Name: str = Field(alias="Company Name")
     Model_Name: str = Field(alias="Model Name")
@@ -27,8 +28,7 @@ class PhoneData(BaseModel):
                 "Back Camera": "12MP+64MP+12MP",
                 "Battery Capacity": "4000mAh",
                 "Screen Size": "6.2inches",
-                "Country": "USA"
+                "Country": "USA",
             }
-        }
+        },
     }
-

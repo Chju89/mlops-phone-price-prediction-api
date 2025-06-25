@@ -3,6 +3,7 @@ import pytest
 import pandas as pd
 from app.prediction_service import PredictionService
 
+
 def test_prediction_service_preprocess():
     service = PredictionService()
 
@@ -17,7 +18,7 @@ def test_prediction_service_preprocess():
         "Battery Capacity": "5000mAh",
         "Screen Size": "6.8inches",
         "Processor": "Snapdragon 8 Gen 2",
-        "Country": "Korea"
+        "Country": "Korea",
     }
 
     processed_df = service.preprocess_data(raw_input)
@@ -26,6 +27,7 @@ def test_prediction_service_preprocess():
     assert processed_df.shape[1] == len(service.trained_feature_columns)
     # Kiểm tra không có giá trị null
     assert not processed_df.isnull().values.any()
+
 
 def test_prediction_service_predict():
     service = PredictionService()
@@ -41,11 +43,10 @@ def test_prediction_service_predict():
         "Battery Capacity": "5000mAh",
         "Screen Size": "6.8inches",
         "Processor": "Snapdragon 8 Gen 2",
-        "Country": "Korea"
+        "Country": "Korea",
     }
 
     predicted_price = service.predict_new_phone_price(raw_input)
 
     assert isinstance(predicted_price, float)
     assert predicted_price > 0
-
