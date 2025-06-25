@@ -17,7 +17,7 @@
 
 🆕 MLflow:
 - [x] Log experiment details (params, metrics, model artifacts)
-- [x] Set up MLflow Tracking URI (localhost or remote)
+- [x] Set up MLflow Tracking URI (GCS backend)
 - [x] Set up experiment name: `PhonePrice-Inference`
 
 ---
@@ -25,39 +25,48 @@
 ### 🐳 2. Docker
 
 - [x] Dockerize FastAPI app with production-ready Dockerfile
-- [x] Include model artifacts in Docker image
-- [x] Run container locally: `docker run -p 8000:8000 phone-price-api`
-- [x] Validate `/docs` and `/predict`
-
-🆕 MLflow:
-- [x] Ensure MLflow runs inside container (or connect to external MLflow Tracking Server)
+- [x] Dockerize MLflow with GCS backend support
+- [x] Include model artifacts in FastAPI image
+- [x] Run containers locally & validate `/docs` and `/predict`
+- [x] Test connection to MLflow Tracking Server from FastAPI
 
 ---
 
 ### ☁️ 3. Infrastructure (GCP + IaC)
 
-- [ ] Use Terraform to provision:
-  - GCE Instance (or GKE Cluster)
-  - Cloud Storage (optional for storing artifacts)
-- [ ] Ansible to install Docker + dependencies
-- [ ] Set up Firewall rules (port 8000, 5000 for MLflow)
+- [x] Use Terraform to provision:
+  - [x] GKE Cluster
+  - [x] Artifact Registry
+  - [x] GCS Bucket (MLflow artifact store)
+  - [x] GCE VM Instance (for Jenkins)
+  - [x] Firewall Rules (ports 8000, 5000)
+- [x] Use Ansible to install:
+  - [x] Docker
+  - [x] Jenkins (on GCE VM)
+- [x] Configure service account key as K8s secret (for GCS/MLflow access)
 
 ---
 
 ### 🔁 4. CI/CD
 
-- [ ] GitHub Actions or Jenkins pipeline:
-  - Linting, Testing
-  - Docker build & push to GCR
-  - Deploy container to GCP
-- [ ] Helm chart (for GKE deployment)
+- [x] Jenkins pipeline:
+  - [x] Clone repo
+  - [x] Build Docker images for FastAPI & MLflow
+  - [x] Push to Artifact Registry (GCR)
+  - [x] Deploy to GKE using Helm
+- [ ] Add linting and unit tests to Jenkins pipeline
+
+🆕 Helm:
+- [x] Create Helm chart for FastAPI
+- [x] Create Helm chart for MLflow
+- [x] Set service type to LoadBalancer and test access via external IP
 
 ---
 
 ### 📊 5. Monitoring & Logging
 
-- [ ] Prometheus + Grafana (basic request metrics)
-- [ ] Logging via GCP Logs or custom logging handler
+- [ ] Set up Prometheus + Grafana for monitoring (K8s + FastAPI metrics)
+- [ ] Centralized logging via GCP Logs or custom logging middleware
 
 ---
 
@@ -67,11 +76,11 @@
 - [x] Log metrics (MAE, RMSE)
 - [x] Log model artifacts (joblib files)
 - [x] Track inference events (request time, prediction result)
-- [ ] (Optional) Register model to MLflow Model Registry
-- [ ] (Optional) Serve model via `mlflow models serve`
+- [ ] Register model to MLflow Model Registry
+- [ ] Serve model via `mlflow models serve` (optional)
 
 ---
 
-✅ Status: LOCAL TEST PASSED  
-🔜 Next: Deploy with Terraform & connect external MLflow server (or use GCP Bucket backend)
+✅ Status: DEPLOYED ON GCP via GKE  
+🔜 Next: Add CI test step, logging/monitoring stack, and optionally MLflow model registry integration.
 
