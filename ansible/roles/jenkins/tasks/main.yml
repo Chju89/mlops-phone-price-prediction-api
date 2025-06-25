@@ -51,3 +51,36 @@
     enabled: yes
     state: started
 
+---
+
+- name: Cập nhật apt cache
+  apt:
+    update_cache: yes
+
+- name: Cài pip3
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Cài công cụ lint/test Python
+  pip:
+    name:
+      - black
+      - ruff
+      - pytest
+    executable: pip3
+
+- name: Cài kubectl
+  shell: |
+    curl -LO "https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl"
+    chmod +x kubectl
+    mv kubectl /usr/local/bin/kubectl
+  args:
+    creates: /usr/local/bin/kubectl
+
+- name: Cài Helm
+  shell: |
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  args:
+    creates: /usr/local/bin/helm
+
