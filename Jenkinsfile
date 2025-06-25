@@ -16,7 +16,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Clone repo bằng SSH (đảm bảo đã tạo credential trong Jenkins)
-                git url: 'git@github.com:Chju89/mlops-phone-price-prediction-api.git', credentialsId: 'github-ssh-key'
+                git url: 'git@github.com:Chju89/mlops-phone-price-prediction-api.git', credentialsId: 'github-ssh-key', branch: 'main'
 
                 // Copy file .json vào workspace
                 sh 'cp ~/gcp-sa-key.json $GOOGLE_APPLICATION_CREDENTIALS'
