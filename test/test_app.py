@@ -24,9 +24,9 @@ def test_predict_endpoint_success():
     response = client.post("/predict", json=sample_input)
     assert response.status_code == 200
     result = response.json()
-    assert "predicted_price" in result
-    assert isinstance(result["predicted_price"], float)
-    assert result["predicted_price"] > 0
+    assert "predicted_price_USD" in result
+    assert isinstance(result["predicted_price_USD"], float)
+    assert result["predicted_price_USD"] > 0
 
 
 def test_predict_endpoint_invalid_input():
