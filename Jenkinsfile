@@ -73,9 +73,9 @@ pipeline {
         stage('Deploy to GKE') {
             steps {
                 sh '''
-                echo "🔄 Connecting to GKE cluster..."
+                echo "🔄 Connecting to regional GKE cluster..."
                 gcloud auth activate-service-account --key-file=$GOOGLE_APPLICATION_CREDENTIALS
-                gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $PROJECT_ID
+                gcloud container clusters get-credentials $GKE_CLUSTER --region $REGION --project $PROJECT_ID
 
                 echo "📦 Deploying FastAPI using Helm..."
                 helm upgrade --install fastapi ./helm/fastapi \
