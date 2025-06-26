@@ -46,7 +46,10 @@ pipeline {
 
         stage('Unit Test') {
             steps {
-                sh 'pytest'
+                sh '''
+                echo "🧪 Running unit tests with PYTHONPATH=."
+                PYTHONPATH=. pytest
+                '''
             }
         }
 
