@@ -47,8 +47,9 @@ pipeline {
         stage('Unit Test') {
             steps {
                 sh '''
-                echo "🧪 Running unit tests with PYTHONPATH=."
-                PYTHONPATH=. pytest
+                echo "🧪 Running unit tests with MLFLOW disabled..."
+                export DISABLE_MLFLOW=1
+                PYTHONPATH=$PWD pytest test/
                 '''
             }
         }

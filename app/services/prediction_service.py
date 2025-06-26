@@ -8,9 +8,10 @@ import re
 import mlflow
 import time
 
-mlflow_uri = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow:5000")
-mlflow.set_tracking_uri(mlflow_uri)
-mlflow.set_experiment("PhonePrice-Inference")
+if os.getenv("DISABLE_MLFLOW") != "1":
+    mlflow_uri = os.getenv("MLFLOW_TRACKING_URI", "http://mlflow:5000")
+    mlflow.set_tracking_uri(mlflow_uri)
+    mlflow.set_experiment("PhonePrice-Inference")
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 MODELS_DIR = os.path.join(BASE_DIR, "models")
@@ -230,8 +231,6 @@ class PredictionService:
         try:
             start_time = time.time()  # Đo thời gian inference
 
-            # mlflow.set_experiment("PhonePrice-Inference")
-
             processed_data_df = self.preprocess_data(new_phone_data_raw)
 
             X_processed_array = processed_data_df[self.trained_feature_columns].values
@@ -243,12 +242,13 @@ class PredictionService:
             predicted_price = np.exp(log_predicted_price)
 
             # MLflow logging
-            with mlflow.start_run():
-                mlflow.log_param("model", "best_lgbm_regressor")
-                mlflow.log_metric("inference_time", time.time() - start_time)
-                mlflow.log_metric("predicted_price", predicted_price)
-                mlflow.log_metric("num_features", len(self.trained_feature_columns))
-                mlflow.log_dict(new_phone_data_raw, "input_data_.json")
+            if os.getenv("DISABLE_MLFLOW") !="1":
+                with mlflow.start_run():
+                     mlflow.log_param("model", "best_lgbm_regressor")
+                     mlflow.log_metric("inference_time", time.time() - start_time)
+                     mlflow.log_metric("predicted_price", predicted_price)
+                     mlflow.log_metric("num_features", len(self.trained_feature_columns))
+                     mlflow.log_dict(new_phone_data_raw, "input_data_.json")
 
             return predicted_price
         except Exception as e:
