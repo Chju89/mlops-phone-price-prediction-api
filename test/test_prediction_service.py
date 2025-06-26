@@ -1,7 +1,7 @@
 # UNIT TEST cho PredictionService trực tiếp
 import pytest
 import pandas as pd
-from app.prediction_service import PredictionService
+from app.services.prediction_service import PredictionService
 
 
 def test_prediction_service_preprocess():
