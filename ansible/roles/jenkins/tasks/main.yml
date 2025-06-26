@@ -84,3 +84,9 @@
   args:
     creates: /usr/local/bin/helm
 
+- name: Install gke-gcloud-auth-plugin
+  become: true
+  apt:
+    name: google-cloud-sdk-gke-gcloud-auth-plugin
+    state: present
+

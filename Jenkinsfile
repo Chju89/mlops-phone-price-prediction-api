@@ -91,11 +91,11 @@ pipeline {
                 echo "⏳ Waiting for external IP..."
                 sleep 30
 
-                IP=$(kubectl get svc fastapi -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
+                IP=$(kubectl get svc fastapi-fastapi -n default -o jsonpath="{.status.loadBalancer.ingress[0].ip}")
                 echo "🌐 External IP: $IP"
 
                 echo "🚀 Sending test request to /predict"
-                curl -X POST http://$IP:8000/predict \
+                curl -X POST http://$IP/predict \
                     -H "Content-Type: application/json" \
                     -d '{"battery_power":800, "ram":1000, "px_height":1000, "px_width":800, "mobile_wt":180, "int_memory":32, "dual_sim":1, "touch_screen":1, "wifi":1}'
                 '''
