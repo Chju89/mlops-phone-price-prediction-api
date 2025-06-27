@@ -14,6 +14,7 @@ app.include_router(phone.router)
 # Instrumentator cho phép expose /metrics
 Instrumentator().instrument(app).expose(app)
 
+
 @app.get("/")
 async def root():
     return {"message": "Chào mừng đến với API Dự đoán Giá Điện thoại!"}
