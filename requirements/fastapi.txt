@@ -16,4 +16,5 @@ pytest
 black[jupyter]
 ruff
 prometheus-fastapi-instrumentator
+pre-commit
 
