@@ -43,7 +43,6 @@
 - [x] Use Ansible to install:
   - [x] Docker
   - [x] Jenkins (on GCE VM)
-  - [x] Additional tools: `kubectl`, `helm`, `pip3`, `black`, `pytest`, `ruff`
 - [x] Configure service account key as K8s secret (for GCS/MLflow access)
 
 ---
@@ -55,7 +54,7 @@
   - [x] Build Docker images for FastAPI & MLflow
   - [x] Push to Artifact Registry (GCR)
   - [x] Deploy to GKE using Helm
-- [ ] **(Next)** Add linting and unit tests to Jenkins pipeline
+  - [x] Add linting and unit tests to Jenkins pipeline ✅
 
 🆕 Helm:
 - [x] Create Helm chart for FastAPI
@@ -77,11 +76,11 @@
 - [x] Log metrics (MAE, RMSE)
 - [x] Log model artifacts (joblib files)
 - [x] Track inference events (request time, prediction result)
-- [ ] **(Next)** Register model to MLflow Model Registry
+- [ ] Register model to MLflow Model Registry
 - [ ] Serve model via `mlflow models serve` (optional)
 
 ---
 
-✅ **Status:** DEPLOYED ON GCP via GKE using Jenkins CI/CD  
-🔜 **Next Steps:** Add CI testing (lint + pytest), Monitoring/Logging (Prometheus/Grafana), MLflow Model Registry
+✅ Status: CI/CD Pipeline with test & linting is working  
+🔜 Next: Add monitoring/logging stack, and optionally MLflow model registry integration.
 
