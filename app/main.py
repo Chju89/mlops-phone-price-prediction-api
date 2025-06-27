@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from app.routes import phone
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI(
     title="API Dự đoán Giá Điện thoại",
@@ -10,6 +11,8 @@ app = FastAPI(
 # Include routes từ module phone
 app.include_router(phone.router)
 
+# Instrumentator cho phép expose /metrics
+Instrumentator().instrument(app).expose(app)
 
 @app.get("/")
 async def root():
