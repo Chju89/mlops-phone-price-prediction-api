@@ -242,13 +242,13 @@ class PredictionService:
             predicted_price = np.exp(log_predicted_price)
 
             # MLflow logging
-            if os.getenv("DISABLE_MLFLOW") !="1":
+            if os.getenv("DISABLE_MLFLOW") != "1":
                 with mlflow.start_run():
-                     mlflow.log_param("model", "best_lgbm_regressor")
-                     mlflow.log_metric("inference_time", time.time() - start_time)
-                     mlflow.log_metric("predicted_price", predicted_price)
-                     mlflow.log_metric("num_features", len(self.trained_feature_columns))
-                     mlflow.log_dict(new_phone_data_raw, "input_data_.json")
+                    mlflow.log_param("model", "best_lgbm_regressor")
+                    mlflow.log_metric("inference_time", time.time() - start_time)
+                    mlflow.log_metric("predicted_price", predicted_price)
+                    mlflow.log_metric("num_features", len(self.trained_feature_columns))
+                    mlflow.log_dict(new_phone_data_raw, "input_data_.json")
 
             return predicted_price
         except Exception as e:
