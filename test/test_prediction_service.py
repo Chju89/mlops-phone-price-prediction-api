@@ -1,6 +1,4 @@
 # UNIT TEST cho PredictionService trực tiếp
-import pytest
-import pandas as pd
 from app.services.prediction_service import PredictionService
 
 
