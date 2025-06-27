@@ -1,86 +1,85 @@
-### ✅ MLOps Pipeline for Phone Price Prediction API
+
+✅ MLOps Pipeline for Phone Price Prediction API
 
 ---
 
-### 1. Develop
+1. 🧪 Develop
 
 - [x] Cleaned & preprocessed dataset
-- [x] Train model (LGBMRegressor) with log(price)
-- [x] Save model: 
-  - `best_lgbm_regressor.joblib`
-  - `scaler.joblib`
-  - `feature_columns.joblib`
-- [x] Build FastAPI app with:
+- [x] Train model (`LGBMRegressor`) with log(price)
+- [x] Save model artifacts:  
+  - `best_lgbm_regressor.joblib`, `scaler.joblib`, `feature_columns.joblib`
+- [x] FastAPI app with:
   - `/predict` endpoint
-  - Pydantic schema
-  - Input preprocessing
+  - Pydantic schema & input validation
+  - Inference pipeline
+- [x] Integration test with `TestClient`
+- [x] Unit tests for `PredictionService`
 
-🆕 MLflow:
-- [x] Log experiment details (params, metrics, model artifacts)
-- [x] Set up MLflow Tracking URI (GCS backend)
-- [x] Set up experiment name: `PhonePrice-Inference`
-
----
-
-### 🐳 2. Docker
-
-- [x] Dockerize FastAPI app with production-ready Dockerfile
-- [x] Dockerize MLflow with GCS backend support
-- [x] Include model artifacts in FastAPI image
-- [x] Run containers locally & validate `/docs` and `/predict`
-- [x] Test connection to MLflow Tracking Server from FastAPI
+🆕 MLflow Integration:
+- [x] Track experiments: params, metrics, artifacts
+- [x] MLflow Tracking URI (GCS backend)
+- [x] MLflow experiment: `PhonePrice-Inference`
 
 ---
 
-### ☁️ 3. Infrastructure (GCP + IaC)
+2. 🐳 Docker
 
-- [x] Use Terraform to provision:
+- [x] Dockerfile cho FastAPI
+- [x] Dockerfile cho MLflow server (GCS backend)
+- [x] Include model artifacts trong FastAPI image
+- [x] Test container chạy local `/predict`
+- [x] FastAPI → gửi log đến MLflow Server
+
+---
+
+3. ☁️ Infrastructure (GCP + IaC)
+
+- [x] Terraform:
   - [x] GKE Cluster
   - [x] Artifact Registry
-  - [x] GCS Bucket (MLflow artifact store)
-  - [x] GCE VM Instance (for Jenkins)
-  - [x] Firewall Rules (ports 8000, 5000)
-- [x] Use Ansible to install:
-  - [x] Docker
-  - [x] Jenkins (on GCE VM)
-- [x] Configure service account key as K8s secret (for GCS/MLflow access)
+  - [x] GCS Bucket cho MLflow
+  - [x] GCE VM chạy Jenkins
+  - [x] Firewall (cổng 8000, 5000)
+- [x] Ansible:
+  - [x] Cài Docker
+  - [x] Cài Jenkins
+  - [x] Cài Helm, kubectl, pip3, pytest, black, ruff
+- [x] Service account key thành secret trong K8s
 
 ---
 
-### 🔁 4. CI/CD
+4. 🔁 CI/CD với Jenkins
 
-- [x] Jenkins pipeline:
+- [x] Jenkins Pipeline:
   - [x] Clone repo
-  - [x] Build Docker images for FastAPI & MLflow
-  - [x] Push to Artifact Registry (GCR)
-  - [x] Deploy to GKE using Helm
-  - [x] Add linting and unit tests to Jenkins pipeline ✅
-
-🆕 Helm:
-- [x] Create Helm chart for FastAPI
-- [x] Create Helm chart for MLflow
-- [x] Set service type to LoadBalancer and test access via external IP
-
----
-
-### 📊 5. Monitoring & Logging
-
-- [ ] Set up Prometheus + Grafana for monitoring (K8s + FastAPI metrics)
-- [ ] Centralized logging via GCP Logs or custom logging middleware
+  - [x] Cài dependencies & test tools
+  - [x] Lint (black, ruff)
+  - [x] Unit & integration tests (`pytest`)
+  - [x] Build Docker images
+  - [x] Push Docker images lên GCR
+  - [x] Deploy FastAPI + MLflow lên GKE (Helm)
+- [x] Post-deploy: curl `/predict` check
+- [x] CI Green ✅
 
 ---
 
-### 🎯 6. MLflow Integration (Experiment Tracking)
+5. 📊 Monitoring & Logging
 
-- [x] Log model training parameters (learning_rate, n_estimators, etc.)
-- [x] Log metrics (MAE, RMSE)
-- [x] Log model artifacts (joblib files)
-- [x] Track inference events (request time, prediction result)
-- [ ] Register model to MLflow Model Registry
-- [ ] Serve model via `mlflow models serve` (optional)
+- [x] Cài đặt Prometheus + Grafana (Helm)
+- [x] Sửa service FastAPI để expose metrics (`/metrics`)
+- [x] Tích hợp `prometheus_fastapi_instrumentator`
+- [x] Tạo `ServiceMonitor` cho FastAPI
+- [x] Truy cập Grafana, tạo dashboard (request count, latency)
 
 ---
 
-✅ Status: CI/CD Pipeline with test & linting is working  
-🔜 Next: Add monitoring/logging stack, and optionally MLflow model registry integration.
+6. 🔬 MLflow Tracking
 
+- [x] Log hyperparams, MAE, RMSE
+- [x] Log artifacts (model, scaler, features)
+- [x] Log inference event
+
+---
+
+✅ Status: DEPLOYED to GKE, CI/CD completed, monitored by Grafana
