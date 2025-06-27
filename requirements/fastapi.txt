@@ -15,4 +15,5 @@ google-cloud-storage
 pytest
 black[jupyter]
 ruff
+prometheus-fastapi-instrumentator
 
