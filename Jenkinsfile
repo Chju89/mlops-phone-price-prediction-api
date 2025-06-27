@@ -38,8 +38,8 @@ pipeline {
             steps {
                 sh '''
                 echo "🔍 Running black and ruff..."
-                black --check .
-                ruff .
+                black --check app test
+                ruff app test
                 '''
             }
         }
