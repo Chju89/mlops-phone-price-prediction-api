@@ -39,7 +39,7 @@ pipeline {
                 sh '''
                 echo "🔍 Running black and ruff..."
                 black --check app test
-                ruff app test
+                ruff check app test
                 '''
             }
         }
