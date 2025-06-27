@@ -38,8 +38,8 @@ pipeline {
             steps {
                 sh '''
                 echo "🔍 Running black and ruff..."
-                black --check . || true
-                ruff . || true
+                black --check .
+                ruff .
                 '''
             }
         }
@@ -49,8 +49,13 @@ pipeline {
                 sh '''
                 echo "🧪 Running unit tests with MLFLOW disabled..."
                 export DISABLE_MLFLOW=1
-                PYTHONPATH=$PWD pytest test/
+                PYTHONPATH=$PWD pytest --junitxml=report.xml
                 '''
+            }
+            post {
+                always {
+                    junit 'report.xml'
+                }
             }
         }
 
@@ -97,7 +102,19 @@ pipeline {
                 echo "🚀 Sending test request to /predict"
                 curl -X POST http://$IP/predict \
                     -H "Content-Type: application/json" \
-                    -d '{"battery_power":800, "ram":1000, "px_height":1000, "px_width":800, "mobile_wt":180, "int_memory":32, "dual_sim":1, "touch_screen":1, "wifi":1}'
+                    -d '{
+                        "Model Name": "iPhone 14 Pro 256GB",
+                        "Company Name": "Apple",
+                        "Launched Year": "2022",
+                        "Mobile Weight": "210g",
+                        "RAM": "6GB",
+                        "Front Camera": "12MP",
+                        "Back Camera": "48MP+12MP+12MP",
+                        "Battery Capacity": "3200mAh",
+                        "Screen Size": "6.1inches",
+                        "Processor": "A16 Bionic",
+                        "Country": "USA"
+                    }'
                 '''
             }
         }
