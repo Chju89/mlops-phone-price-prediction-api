@@ -17,9 +17,17 @@ resources:
   requests:
     cpu: 250m
     memory: 256Mi
+
 env:
   - name: MLFLOW_TRACKING_URI
     value: http://mlflow-mlflow.default.svc.cluster.local:5000
   - name: MLFLOW_ARTIFACT_URI
     value: gs://mle-course-454508-mlflow-bucket/mlflow
+
+serviceMonitor:
+  enabled: true
+
+service:
+  selectorLabels:
+    app.kubernetes.io/instance: fastapi
 
