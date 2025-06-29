@@ -1,70 +1,151 @@
-# Dự án Dự đoán Giá Điện thoại (MLOps Pipeline)
+# 📦 MLOps - Phone Price Prediction API
+
+> Dự án xây dựng hệ thống MLOps End-to-End sử dụng FastAPI, MLflow, Docker, Jenkins, Terraform, Helm, Ansible và được triển khai trên Google Cloud Platform (GCP).
 
 ---
 
-## 🚀 Tổng quan dự án
+## 📍 Mục tiêu dự án
 
-Dự án này trình bày một pipeline MLOps hoàn chỉnh cho việc dự đoán giá điện thoại dựa trên các thông số kỹ thuật. Nó bao gồm từ giai đoạn phát triển mô hình (trong notebook Colab) đến triển khai mô hình dưới dạng một API sử dụng FastAPI, được container hóa bằng Docker, và sẵn sàng cho các bước MLOps nâng cao như giám sát và CI/CD.
+Xây dựng pipeline MLOps hoàn chỉnh bao gồm:
 
-Mô hình dự đoán được sử dụng là **LightGBM Regressor**, đã được huấn luyện trên một tập dữ liệu về các thông số kỹ thuật và giá điện thoại.
+* Triển khai hạ tầng GCP bằng Terraform
+* Cài đặt Jenkins CI/CD bằng Ansible
+* Viết pipeline build/test/deploy với Jenkins
+* Deploy FastAPI và MLflow lên GKE bằng Helm
+* Tích hợp Prometheus + Grafana giám sát FastAPI
 
 ---
 
-## 📂 Cấu trúc thư mục
+## 🧰 Các thành phần chính
 
-Dự án được tổ chức gọn gàng để dễ dàng quản lý và mở rộng:
+| Thành phần               | Mô tả                                                    |
+| ------------------------ | -------------------------------------------------------- |
+| **FastAPI**              | API dự đoán giá điện thoại từ input người dùng           |
+| **MLflow**               | Quản lý training, log model, model registry              |
+| **Jenkins**              | CI/CD pipeline: build image, deploy Helm chart           |
+| **Terraform**            | Tạo hạ tầng GCP: GKE, Artifact Registry, GCS, VM Jenkins |
+| **Ansible**              | Cài Docker, Jenkins, Helm, kubectl lên VM Jenkins        |
+| **Helm**                 | Deploy FastAPI/MLflow lên GKE theo chart                 |
+| **Prometheus + Grafana** | Thu thập metric từ API, visualize dashboard              |
 
+---
+
+## 🚀 Pipeline CI/CD (Jenkins)
+
+**CI:**
+
+* Lint code với `pre-commit`: Black, Ruff, Pytest
+* Build Docker image cho FastAPI / MLflow
+* Push image lên Artifact Registry
+
+**CD:**
+
+* Deploy lại lên GKE bằng Helm Chart với image mới nhất
+
+---
+
+## 📊 Monitoring
+
+* FastAPI cung cấp `/metrics` (Prometheus format)
+* Prometheus scrape metrics
+* Grafana hiển thị:
+
+  * Số lượng request
+  * Thời gian phản hồi
+  * RAM/CPU pod FastAPI sử dụng
+
+---
+
+## 🔐 Bảo mật & Quản lý Secrets
+
+* Service Account JSON quản lý truy cập GCP (Artifact, GKE...)
+* SSH key riêng cho VM Jenkins
+* Các file nhạy cảm được ignore trong `.gitignore`
+
+---
+
+## 🔮 Cáu trúc thư mục repo
+
+```
 .
-
-├── app/
-│   ├── app.py                     # Ứng dụng FastAPI để phục vụ mô hình
-│   └── prediction_service.py      # Chứa logic tải mô hình, tiền xử lý và dự đoán
-├── models/
-│   ├── best_lgbm_regressor.joblib # Mô hình LightGBM đã huấn luyện
-│   ├── scaler.joblib              # Scaler dùng để chuẩn hóa dữ liệu
-│   └── feature_columns.joblib     # Danh sách các cột đặc trưng đã được huấn luyện
-├── notebook/
-│   └── mobiles_price_prediction.ipynb # Notebook Google Colab để phát triển và huấn luyện mô hình
-├── .dockerignore                  # Các tệp và thư mục sẽ bị bỏ qua khi xây dựng Docker image
-├── Dockerfile                     # Hướng dẫn xây dựng Docker image
-├── requirements.txt               # Danh sách các thư viện Python cần thiết
-└── README.md                      # File hướng dẫn dự án này
+├── ansible/                # Cài Jenkins, Docker qua Ansible
+│   ├── playbook.yml
+│   ├── inventory.ini
+│   └── roles/
+│       ├── docker/
+│       └── jenkins/
+├── app/                   # FastAPI app code
+│   ├── main.py
+│   ├── routes/
+│   ├── models/
+│   └── services/
+├── models/                # Mô hình ML: joblib files
+├── helm/                  # Helm chart triển khai FastAPI/MLflow
+│   ├── fastapi/
+│   └── mlflow/
+├── terraform/             # IaC: GKE, Artifact Registry, VM Jenkins, GCS
+│   ├── *.tf
+│   └── scripts/install_jenkins.sh
+├── Dockerfile             # FastAPI
+├── Dockerfile.mlflow      # MLflow
+├── Jenkinsfile            # Jenkins pipeline
+├── requirements/          # Python requirements chia theo service
+├── environment.yml        # Conda env cho local
+├── test/                  # Unit test FastAPI
+├── notebook/              # Notebook khối tạo huấn luyện model
+└── README.md
+```
 
 ---
 
-## 🛠️ Thiết lập môi trường cục bộ
-
-Để chạy dự án này trên máy cục bộ của bạn, hãy làm theo các bước sau:
-
-### 1. Tạo và kích hoạt môi trường Conda
-
-Mở Terminal hoặc Anaconda Prompt, điều hướng đến thư mục gốc của dự án (`your_project_name/`) và chạy các lệnh sau:
+## ✨ Hướng dẫn triển khai
 
 ```bash
-# Tạo môi trường Conda mới từ file environment.yml
-```shell
-conda env create -f environment.yml
-```
-# Kích hoạt môi trường
-```shell
-conda activate phone_price_env 
-```
+# 1. Tạo hạ tầng trên GCP
+cd terraform/
+terraform init && terraform apply
 
-Chạy API cục bộ
-# Đảm bảo bạn đang ở thư mục gốc của dự án
+# 2. Cài Jenkins bằng Ansible
+cd ansible/
+ansible-playbook -i inventory.ini playbook.yml
+
+# 3. Truy cập Jenkins: http://<VM-IP>:8080
+# Tạo pipeline với Jenkinsfile trong repo
+
+# 4. Trigger pipeline:
+# Build image → Push Artifact Registry → Deploy Helm lên GKE
+
+# 5. Truy cập:
+# FastAPI: http://<LoadBalancer-IP>/docs
+# MLflow UI: http://<LoadBalancer-IP-mlflow>
+# Grafana: http://<LoadBalancer-IP-grafana>
+```
 
 ---
 
-## 🐳 Run with Docker Compose
+## 🔬 Kết quả mô hình
 
-### 1. Build and start services
-```bash
-docker compose up --build
-```
-### 2. Access the services 
-| Service   | URL                                            |
-| --------- | ---------------------------------------------- |
-| FastAPI   | [http://localhost:8000](http://localhost:8000) |
-| MLflow UI | [http://localhost:5000](http://localhost:5000) |
+* Dữ liệu: Tập giá điện thoại (RAM, camera, bộ nhớ...)
+* Model: LGBM Regressor
+* Đã scale + lưu model, scaler, features với joblib
 
-# test webhook
+
+---
+
+## ✅ Tính năng nổi bật
+
+* ✅ Triển khai hạ tầng toàn bộ bằng Terraform
+* ✅ CI/CD tự động hoàn toàn với Jenkins
+* ✅ Monitoring bằng Prometheus + Grafana
+* ✅ Helm chart hoá việc deploy
+* ✅ Quản lý code chuẩn với pre-commit (black, ruff, pytest)
+
+---
+
+## 📲 Liên hệ
+
+> **Nguyễn Quang Triều**
+> 📧 Email: \[email cá nhân]
+> 👉 LinkedIn: \[link LinkedIn]
+> 📂 CV: \[link Google Drive CV]
+

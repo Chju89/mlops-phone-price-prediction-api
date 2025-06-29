@@ -13,3 +13,4 @@ helm/mlflow/templates/secret.yaml
 terraform/*.tfstate
 terraform/*.tfstate.backup
 terraform/terraform.tfvars
+pipeline.txt
