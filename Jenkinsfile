@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         PROJECT_ID = 'mle-course-454508'
-        IMAGE_NAME = 'phone-price-api-mlflow'
+        IMAGE_NAME = 'phone-price-api-fastapi'
         IMAGE_TAG = 'latest'
         REGION = 'us-central1'
         REPO = 'mlops-repo'
