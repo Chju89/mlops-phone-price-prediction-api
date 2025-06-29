@@ -5,10 +5,14 @@ image:
   pullPolicy: Always
   tag: v4
 
+containerPort: 8000  # 👈 Rất quan trọng để tránh lỗi containerPort=0
+
 service:
   type: LoadBalancer
   port: 80
   targetPort: 8000
+  selectorLabels:
+    app.kubernetes.io/instance: fastapi  # 👈 phục vụ cho ServiceMonitor
 
 resources:
   limits:
@@ -26,8 +30,4 @@ env:
 
 serviceMonitor:
   enabled: true
-
-service:
-  selectorLabels:
-    app.kubernetes.io/instance: fastapi
 
