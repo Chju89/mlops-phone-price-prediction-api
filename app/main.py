@@ -19,4 +19,4 @@ async def root():
 
 
 # Instrumentator cho phép expose /metrics
-Instrumentator().instrument(app).expose(app, inclued_in_schema=True)
+Instrumentator().instrument(app).expose(app, include_in_schema=True)
