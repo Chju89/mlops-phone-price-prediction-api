@@ -12,10 +12,11 @@ app = FastAPI(
 app.include_router(phone.router)
 
 
+# Root check
 @app.get("/")
 async def root():
     return {"message": "Chào mừng đến với API Dự đoán Giá Điện thoại!"}
 
 
 # Instrumentator cho phép expose /metrics
-Instrumentator().instrument(app).expose(app)
+Instrumentator().instrument(app).expose(app, inclued_in_schema=True)

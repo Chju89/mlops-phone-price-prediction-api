@@ -18,7 +18,7 @@ spec:
         - name: {{ include "fastapi.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: {{ .Values.service.targetPort }}
+            - containerPort: {{ .Values.containerPort }}
           env:
             {{- range .Values.env }}
             - name: {{ .name }}
