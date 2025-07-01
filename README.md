@@ -16,6 +16,13 @@ Xây dựng pipeline MLOps hoàn chỉnh bao gồm:
 
 ---
 
+## 🧱 Kiến trúc tổng thể hệ thống
+
+![Architecture Overview](images/architecture-overview.png)
+![System Diagram](images/system-diagram.png)
+
+---
+
 ## 🧰 Các thành phần chính
 
 | Thành phần               | Mô tả                                                    |
@@ -48,11 +55,21 @@ Xây dựng pipeline MLOps hoàn chỉnh bao gồm:
 
 * FastAPI cung cấp `/metrics` (Prometheus format)
 * Prometheus scrape metrics
-* Grafana hiển thị:
+* Grafana hiển thị dashboard:
 
-  * Số lượng request
-  * Thời gian phản hồi
-  * RAM/CPU pod FastAPI sử dụng
+![Grafana](images/grafana-dashboard.png)
+
+---
+
+## 📂 API & MLflow UI
+
+**📘 FastAPI Swagger UI:**
+
+![Swagger](images/swagger-ui.png)
+
+**📘 MLflow Experiment Tracking:**
+
+![MLflow](images/mlflow-ui.png)
 
 ---
 
@@ -64,35 +81,22 @@ Xây dựng pipeline MLOps hoàn chỉnh bao gồm:
 
 ---
 
-## 🔮 Cáu trúc thư mục repo
+## 🔮 Cấu trúc thư mục repo
 
 ```
 .
-├── ansible/                # Cài Jenkins, Docker qua Ansible
-│   ├── playbook.yml
-│   ├── inventory.ini
-│   └── roles/
-│       ├── docker/
-│       └── jenkins/
-├── app/                   # FastAPI app code
-│   ├── main.py
-│   ├── routes/
-│   ├── models/
-│   └── services/
-├── models/                # Mô hình ML: joblib files
-├── helm/                  # Helm chart triển khai FastAPI/MLflow
-│   ├── fastapi/
-│   └── mlflow/
-├── terraform/             # IaC: GKE, Artifact Registry, VM Jenkins, GCS
-│   ├── *.tf
-│   └── scripts/install_jenkins.sh
-├── Dockerfile             # FastAPI
-├── Dockerfile.mlflow      # MLflow
-├── Jenkinsfile            # Jenkins pipeline
-├── requirements/          # Python requirements chia theo service
-├── environment.yml        # Conda env cho local
-├── test/                  # Unit test FastAPI
-├── notebook/              # Notebook khối tạo huấn luyện model
+├── ansible/
+├── app/
+├── models/
+├── helm/
+├── terraform/
+├── Dockerfile
+├── Dockerfile.mlflow
+├── Jenkinsfile
+├── requirements/
+├── environment.yml
+├── test/
+├── notebook/
 └── README.md
 ```
 
@@ -110,7 +114,6 @@ cd ansible/
 ansible-playbook -i inventory.ini playbook.yml
 
 # 3. Truy cập Jenkins: http://<VM-IP>:8080
-# Tạo pipeline với Jenkinsfile trong repo
 
 # 4. Trigger pipeline:
 # Build image → Push Artifact Registry → Deploy Helm lên GKE
@@ -120,15 +123,6 @@ ansible-playbook -i inventory.ini playbook.yml
 # MLflow UI: http://<LoadBalancer-IP-mlflow>
 # Grafana: http://<LoadBalancer-IP-grafana>
 ```
-
----
-
-## 🔬 Kết quả mô hình
-
-* Dữ liệu: Tập giá điện thoại (RAM, camera, bộ nhớ...)
-* Model: LGBM Regressor
-* Đã scale + lưu model, scaler, features với joblib
-
 
 ---
 
@@ -145,7 +139,6 @@ ansible-playbook -i inventory.ini playbook.yml
 ## 📲 Liên hệ
 
 > **Nguyễn Quang Triều**
-> 📧 Email: \[email cá nhân]
-> 👉 LinkedIn: \[link LinkedIn]
-> 📂 CV: \[link Google Drive CV]
-
+> 📧 Email: quangtrieu.sp@gmail.com
+> 👉 LinkedIn: [![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?logo=linkedin)](https://www.linkedin.com/in/quangtrieu-nguyen-a46659214/)
+> 📂 CV: [link Google Drive CV]
