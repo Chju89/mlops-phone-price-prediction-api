@@ -141,4 +141,4 @@ ansible-playbook -i inventory.ini playbook.yml
 > **Nguyễn Quang Triều**
 > 📧 Email: quangtrieu.sp@gmail.com
 > 👉 LinkedIn: [![LinkedIn](https://img.shields.io/badge/LinkedIn-Profile-blue?logo=linkedin)](https://www.linkedin.com/in/quangtrieu-nguyen-a46659214/)
-> 📂 CV: [link Google Drive CV]
+> 📂 CV: [https://drive.google.com/file/d/1Uug2EC7Sg9CTeh5c4LvkqO7H7iV7FeFo/view?usp=drive_link]
